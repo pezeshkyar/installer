@@ -11,16 +11,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Installer {
+public class InstallerAllInOne {
 	private Connection connection;
 	
 	public void install(){
 		if(openConnection()){
 			createTables();
-//			insertProvinceNames();
-//			insertCityNames();
-//			insertSpecNames();
-//			insertSubSpecNames();
+			insertProvinceNames();
+			insertCityNames();
+			insertSpecNames();
+			insertSubSpecNames();
 		}
 	}
 
@@ -33,7 +33,7 @@ public class Installer {
 		}
 
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/arayeshyar", "root", "dreadlord");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pezeshkyar_all_in_one", "root", "dreadlord");
 
 		} catch (SQLException e) {
 			
@@ -70,11 +70,12 @@ public class Installer {
 		    		+ " mobileno varchar(255), " 
 		    		+ " name varchar(255), " 
 		    		+ " lastname varchar(255), " 
-		    		+ " role integer not null, " 
 		    		+ " cityid integer, " 
-		    		+ " photo mediumblob, " 
+		    		+ " photo mediumblob, "
+		    		+ " officeid int not NULL, " 
 		    		+ " primary key(id), "
-		    		+ " CONSTRAINT uniqueuser UNIQUE(username) "
+		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE,"
+		    		+ " CONSTRAINT uniqueuser UNIQUE(username, officeid) "
 		    		+ ")";
 		    stmt.executeUpdate(sql);
 
@@ -95,7 +96,6 @@ public class Installer {
 
 		    sql = "CREATE TABLE IF NOT EXISTS office "
 		    		+ " (id integer not NULL, "  
-		    		+ " doctorid int not NULL, " 
 		    		+ " spec integer, "
 		    		+ " subspec integer, "
 		    		+ " address text, "
@@ -106,9 +106,16 @@ public class Installer {
 		    		+ " timequantum integer, "
 		    		+ " biography text, "
 		    		+ " primary key(id), "
+		    		+ " FOREIGN KEY(spec) REFERENCES spec(id) ON DELETE CASCADE, "
+		    		+ " FOREIGN KEY(subspec) REFERENCES subspec(id) ON DELETE CASCADE)";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS doctoroffice "
+		    		+ " (doctorid integer NOT NULL, "
+		    		+ " officeid integer NOT NULL, "
+		    		+ " PRIMARY KEY (doctorid, officeid) "
 		    		+ " FOREIGN KEY(doctorid) REFERENCES user(id) ON DELETE CASCADE, "
-		    		+ " FOREIGN KEY(spec) REFERENCES spec(id) ON DELETE CASCADE, " +
-		    		" FOREIGN KEY(subspec) REFERENCES subspec(id) ON DELETE CASCADE)";
+		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE) ";
 		    stmt.executeUpdate(sql);
 		    
 		    sql = "CREATE TABLE IF NOT EXISTS secretary " +
@@ -296,7 +303,7 @@ public class Installer {
 		String line;
 		String[] sep;
 		PreparedStatement stmt = null;
-		int id, pid;
+		int id;
 		String query = "insert into spec(id, spec) values(?, ?)";
 		
 		try {
@@ -382,7 +389,7 @@ public class Installer {
 	}
 	
 	public static void main(String[] args) {
-		Installer inst = new Installer();
+		InstallerAllInOne inst = new InstallerAllInOne();
 		inst.install();
 
 	}
