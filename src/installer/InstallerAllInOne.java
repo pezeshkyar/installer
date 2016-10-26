@@ -37,7 +37,7 @@ public class InstallerAllInOne {
 
 		} catch (SQLException e) {
 			
-			System.out.println("Error Opening connection");
+			System.out.println("Error Opening connection: " + e.getMessage());
 			return false;
 		}
 		
@@ -63,22 +63,6 @@ public class InstallerAllInOne {
 		    		+ "FOREIGN KEY (provinceid) REFERENCES province(id) ON DELETE CASCADE)";
 		    stmt.executeUpdate(sql);
 		    
-		    sql = "CREATE TABLE IF NOT EXISTS user( " 
-		    		+ "id integer not NULL, "
-		    		+ "username varchar(255), "  
-		    		+ " password varchar(255), "  
-		    		+ " mobileno varchar(255), " 
-		    		+ " name varchar(255), " 
-		    		+ " lastname varchar(255), " 
-		    		+ " cityid integer, " 
-		    		+ " photo mediumblob, "
-		    		+ " officeid int not NULL, " 
-		    		+ " primary key(id), "
-		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE,"
-		    		+ " CONSTRAINT uniqueuser UNIQUE(username, officeid) "
-		    		+ ")";
-		    stmt.executeUpdate(sql);
-
 		    sql = "CREATE TABLE IF NOT EXISTS spec " + 
 		    		"(id integer not NULL, " + 
 		    		" spec varchar(255) not NULL, " + 
@@ -93,7 +77,7 @@ public class InstallerAllInOne {
 		    		" FOREIGN KEY(specid) REFERENCES spec(id) ON DELETE CASCADE)";
 		    stmt.executeUpdate(sql);
 
-
+		    
 		    sql = "CREATE TABLE IF NOT EXISTS office "
 		    		+ " (id integer not NULL, "  
 		    		+ " spec integer, "
@@ -110,10 +94,26 @@ public class InstallerAllInOne {
 		    		+ " FOREIGN KEY(subspec) REFERENCES subspec(id) ON DELETE CASCADE)";
 		    stmt.executeUpdate(sql);
 		    
+		    sql = "CREATE TABLE IF NOT EXISTS user( " 
+		    		+ "id integer not NULL, "
+		    		+ "username varchar(255), "  
+		    		+ " password varchar(255), "  
+		    		+ " mobileno varchar(255), " 
+		    		+ " name varchar(255), " 
+		    		+ " lastname varchar(255), " 
+		    		+ " cityid integer, " 
+		    		+ " photo mediumblob, "
+		    		+ " officeid int not NULL, " 
+		    		+ " primary key(id), "
+		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE,"
+		    		+ " CONSTRAINT uniqueuser UNIQUE(username, officeid) "
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
 		    sql = "CREATE TABLE IF NOT EXISTS doctoroffice "
 		    		+ " (doctorid integer NOT NULL, "
 		    		+ " officeid integer NOT NULL, "
-		    		+ " PRIMARY KEY (doctorid, officeid) "
+		    		+ " PRIMARY KEY (doctorid, officeid), "
 		    		+ " FOREIGN KEY(doctorid) REFERENCES user(id) ON DELETE CASCADE, "
 		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE) ";
 		    stmt.executeUpdate(sql);
