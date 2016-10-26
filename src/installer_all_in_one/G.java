@@ -1,4 +1,4 @@
-package installer;
+package installer_all_in_one;
 
 public class G {
 	public static int utf8StrtoInt(String str){
