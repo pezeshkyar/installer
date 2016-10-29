@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ public class InstallerAllInOne {
 	public void install(){
 		if(openConnection()){
 			createTables();
+			insertMasterPass();
 			insertProvinceNames();
 			insertCityNames();
 			insertSpecNames();
@@ -49,12 +51,17 @@ public class InstallerAllInOne {
 		try {
 			stmt = connection.createStatement();
 			
-		    String sql = "CREATE TABLE IF NOT EXISTS province " +
+			String sql = "CREATE TABLE IF NOT EXISTS master " +
+	                   "(username VARCHAR(255) not NULL, " +
+	                   " password VARCHAR(255))"; 
+		    stmt.executeUpdate(sql);
+			
+		    sql = "CREATE TABLE IF NOT EXISTS province " +
 	                   "(id INTEGER not NULL, " +
 	                   " name VARCHAR(255), " + 
 	                   " PRIMARY KEY ( id ))"; 
-
 		    stmt.executeUpdate(sql);
+		    
 		    sql = "CREATE TABLE IF NOT EXISTS city " + 
 		    		"(id INTEGER not NULL, " + 
 		    		" provinceid Integer not NULL, " + 
@@ -103,7 +110,8 @@ public class InstallerAllInOne {
 		    		+ " lastname varchar(255), " 
 		    		+ " cityid integer, " 
 		    		+ " photo mediumblob, "
-		    		+ " officeid int not NULL, " 
+		    		+ " officeid int not NULL, "
+		    		+ " email varchar(1023), " 
 		    		+ " primary key(id), "
 		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE,"
 		    		+ " CONSTRAINT uniqueuser UNIQUE(username, officeid) "
@@ -207,6 +215,42 @@ public class InstallerAllInOne {
 		}
 	      
 		return true;
+	}
+	
+	private void insertMasterPass(){
+		PreparedStatement stmt = null;
+		String line;
+
+		String query = "insert into master(username, password) values(?, ?)";
+		try {
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(
+					new FileInputStream("master.txt"), "UTF8"));
+			stmt = connection.prepareStatement(query);
+			
+			line = br.readLine();
+			if(line == null) {br.close(); return;}
+			stmt.setString(1, line);
+			line = br.readLine();
+			if(line == null) {br.close(); return;}
+			stmt.setString(2, line);
+			
+			stmt.executeUpdate();
+			stmt.close();
+			br.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 	
 	private void insertProvinceNames(){
