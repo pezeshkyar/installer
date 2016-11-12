@@ -35,7 +35,7 @@ public class InstallerAllInOne {
 		}
 
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pezeshkyar_all_in_one", "root", "dreadlord");
+			connection = DriverManager.getConnection("jdbc:mysql://185.129.168.135:3306/pezeshkyar_all_in_one", "root", "dreadlord");
 
 		} catch (SQLException e) {
 			
@@ -129,6 +129,7 @@ public class InstallerAllInOne {
 		    sql = "CREATE TABLE IF NOT EXISTS secretary " +
 		    "(officeid integer not NULL, "
 		    + " secretaryid int not NULL,"
+		    + " PRIMARY KEY (officeid, secretaryid)"
 		    + " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE, "
 		    + " FOREIGN KEY(secretaryid) REFERENCES user(id) ON DELETE CASCADE )";
 		    stmt.executeUpdate(sql);
@@ -202,11 +203,62 @@ public class InstallerAllInOne {
 		    sql = "CREATE TABLE IF NOT EXISTS gallery( " 
 		    		+ "id integer not NULL, "
 		    		+ "officeid integer not NULL, "
-		    		+ " photo mediumblob, " 
+		    		+ " photo mediumblob,"
+		    		+ "description varchar(5000),"
+		    		+ "date varchar(50), " 
 		    		+ " primary key(id, officeid) "
 		    		+ ")";
 		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS maxgallerypic( " 
+		    		+ "officeid integer not NULL, "
+		    		+ " maxpic integer, "
+		    		+ " maxpicid integer, " 
+		    		+ " FOREIGN KEY (officeid) REFERENCES office(id) ON DELETE CASCADE "
+		    		+ ")";
+		    stmt.executeUpdate(sql);
 
+		    sql = "CREATE TABLE IF NOT EXISTS ticketsubject ("
+		    		+ "id integer, subject varchar(200), primary key (id)"
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS ticket("
+		    		+ "id integer not NULL, "
+		    		+ "userId integer, subjectId integer, "
+		    		+ "topic varchar(500), priority integer, "
+		    		+ "startDate varchar(50), endDate varchar(50), primary key (id),"
+		    		+ "  foreign key (subjectId) references ticketsubject (id)"
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+
+
+		    sql = "CREATE TABLE IF NOT EXISTS ticketmessage ("
+		    		+ "id integer not Null, userId integer,"
+		    		+ " message varchar(5000), dateMessage varchar(50),"
+		    		+ " ticketId integer, primary key (id), "
+		    		+ " foreign key (ticketId) references ticket (id)"
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS question ("
+		    		+ "id integer not Null, label varchar(200),"
+		    		+ " replytype integer,"
+		    		+ " officeId integer, primary key (id), "
+		    		+ " foreign key (officeId) references office(id)"
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS reply ("
+		    		+ "id integer not Null,"
+		    		+ " userId integer,"
+		    		+ " questionId integer, replyType varchar(2000)"
+		    		+ "primary key (id),"
+		    		+ "foreign key (userId) references user(id) "
+		    		+ " foreign key (questionId) references question(id)"
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
 		    
 		    stmt.close();
 		} catch (SQLException e) {
