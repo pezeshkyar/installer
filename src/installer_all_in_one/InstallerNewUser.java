@@ -12,17 +12,17 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class InstallerAllInOne {
+public class InstallerNewUser {
 	private Connection connection;
 	
 	public void install(){
 		if(openConnection()){
 			createTables();
-			insertMasterPass();
-			insertProvinceNames();
-			insertCityNames();
-			insertSpecNames();
-			insertSubSpecNames();
+//			insertMasterPass();
+//			insertProvinceNames();
+//			insertCityNames();
+//			insertSpecNames();
+//			insertSubSpecNames();
 		}
 	}
 
@@ -35,7 +35,7 @@ public class InstallerAllInOne {
 		}
 
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/pezeshkyar_all_in_one", "root", "dreadlord");
+			connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/pezeshkyar_new_user", "root", "dreadlord");
 
 		} catch (SQLException e) {
 			
@@ -110,12 +110,17 @@ public class InstallerAllInOne {
 		    		+ " lastname varchar(255), " 
 		    		+ " cityid integer, " 
 		    		+ " photo mediumblob, "
-		    		+ " officeid int not NULL, "
 		    		+ " email varchar(1023), " 
 		    		+ " primary key(id), "
-		    		+ " FOREIGN KEY(officeid) REFERENCES office(id) ON DELETE CASCADE,"
-		    		+ " CONSTRAINT uniqueuser UNIQUE(username, officeid) "
+		    		+ " CONSTRAINT uniqueuser UNIQUE(username) "
 		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "create table useroffice(userid integer NOT NULL, "
+		    		+ "officeid integer NOT NULL, "
+		    		+ "primary key (userid, officeid), "
+		    		+ "foreign key (userid) references user(id) on delete cascade, "
+		    		+ "foreign key (officeid) references office(id) on delete cascade)";
 		    stmt.executeUpdate(sql);
 		    
 		    sql = "CREATE TABLE IF NOT EXISTS doctoroffice "
@@ -258,7 +263,6 @@ public class InstallerAllInOne {
 		    		+ " foreign key (questionId) references question(id)"
 		    		+ ")";
 		    stmt.executeUpdate(sql);
-		    
 		    
 		    stmt.close();
 		} catch (SQLException e) {
@@ -485,7 +489,7 @@ public class InstallerAllInOne {
 	}
 	
 	public static void main(String[] args) {
-		InstallerAllInOne inst = new InstallerAllInOne();
+		InstallerNewUser inst = new InstallerNewUser();
 		inst.install();
 
 	}
