@@ -264,6 +264,14 @@ public class InstallerNewUser {
 		    		+ ")";
 		    stmt.executeUpdate(sql);
 		    
+		    sql = "CREATE TABLE IF NOT EXISTS usersupport ("
+		    		+ "userid integer NOT NULL, "
+		    		+ "description varchar(1024), "
+		    		+ "FOREIGN KEY (userid) references user(id), "
+		    		+ "CONSTRAINT uniquesupportuserid UNIQUE(userid) "
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
 		    stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
