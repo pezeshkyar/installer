@@ -18,11 +18,11 @@ public class InstallerNewUser {
 	public void install(){
 		if(openConnection()){
 			createTables();
-//			insertMasterPass();
-//			insertProvinceNames();
-//			insertCityNames();
-//			insertSpecNames();
-//			insertSubSpecNames();
+			insertMasterPass();
+			insertProvinceNames();
+			insertCityNames();
+			insertSpecNames();
+			insertSubSpecNames();
 		}
 	}
 
@@ -116,7 +116,7 @@ public class InstallerNewUser {
 		    		+ ")";
 		    stmt.executeUpdate(sql);
 		    
-		    sql = "create table useroffice(userid integer NOT NULL, "
+		    sql = "create table IF NOT EXISTS useroffice(userid integer NOT NULL, "
 		    		+ "officeid integer NOT NULL, "
 		    		+ "primary key (userid, officeid), "
 		    		+ "foreign key (userid) references user(id) on delete cascade, "
