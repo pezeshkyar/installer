@@ -35,7 +35,7 @@ public class InstallerNewUser {
 		}
 
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/pezeshkyar_new_user", "root", "dreadlord");
+			connection = DriverManager.getConnection("jdbc:mysql://185.129.168.135:3306/pezeshkyar_new_user", "root", "dreadlord");
 
 		} catch (SQLException e) {
 			
@@ -269,6 +269,22 @@ public class InstallerNewUser {
 		    		+ "description varchar(1024), "
 		    		+ "FOREIGN KEY (userid) references user(id), "
 		    		+ "CONSTRAINT uniquesupportuserid UNIQUE(userid) "
+		    		+ ")";
+		    stmt.executeUpdate(sql);
+		    
+		    sql = "CREATE TABLE IF NOT EXISTS payment ("
+		    		+ "resNum integer NOT NULL, "
+		    		+ "refNum varchar(50) NOT NULL, "
+		    		+ "userId integer NOT NULL, "
+		    		+ "turnId integer NOT NULL, "
+		    		+ "taskId integer NOT NULL, "
+		    		+ "officeId integer NOT NULL, "
+		    		+ "date varchar(50) NOT NULL, "
+		    		+ "status int NOT NULL, "
+		    		+ "primary key (ResNum), "
+		    		+ "foreign key (userId) references user(id), "
+		    		+ "foreign key (turnId) references turn(id), "
+		    		+ "foreign key (taskId) references task(id) "
 		    		+ ")";
 		    stmt.executeUpdate(sql);
 		    
