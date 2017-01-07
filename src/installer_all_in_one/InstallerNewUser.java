@@ -99,9 +99,9 @@ public class InstallerNewUser {
 					+ "id integer not NULL, " + "username varchar(255), "
 					+ " password varchar(255), " + " mobileno varchar(255), "
 					+ " name varchar(255), " + " lastname varchar(255), "
-					+ " cityid integer, secondPass varchar(50), " + " photo mediumblob, "
-					+ " email varchar(1023), " + " wallet integer, "
-					+ " primary key(id), "
+					+ " cityid integer, secondPass varchar(50), "
+					+ " photo mediumblob, " + " email varchar(1023), "
+					+ " wallet integer, " + " primary key(id), "
 					+ " CONSTRAINT uniqueuser UNIQUE(username) " + ")";
 			stmt.executeUpdate(sql);
 
@@ -260,6 +260,12 @@ public class InstallerNewUser {
 					+ "lineNumber varchar(50) NOT NULL, "
 					+ "smspanelUrl varchar(250) NOT NULL, "
 					+ "primary key (id) )";
+			stmt.executeUpdate(sql);
+
+			sql = "CREATE TABLE IF NOT EXISTS appinfo ("
+					+ "versionName varchar(10), "
+					+ "url varchar(150), " + "details varchar(500), "
+					+ "forceInstall boolean, " + "primary key (versionName) )";
 			stmt.executeUpdate(sql);
 
 			stmt.close();
